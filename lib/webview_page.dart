@@ -1,4 +1,4 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewPage extends StatefulWidget {
@@ -12,8 +12,8 @@ class _WebViewPageState extends State<WebViewPage> {
   @override
   void initState() {
     super.initState();
-    // Initialize WebView when the widget is created
-    WebViewPlatform.instance?.clearCache();  // This line should be removed if you're using a newer version.
+    // Initialize the WebView platform
+    WebViewPlatform.instance?.clearCache();  // Remove this if it causes issues.
   }
 
   @override
@@ -23,8 +23,8 @@ class _WebViewPageState extends State<WebViewPage> {
         title: Text('Web Content Viewer'),
       ),
       body: WebView(
-        initialUrl: 'assets/rgb_cube_3d.html',  // Make sure the path to HTML is correct.
-        javascriptMode: JavascriptMode.unrestricted,  // Allow JavaScript execution.
+        initialUrl: 'assets/rgb_cube_3d.html', // Ensure the path to the HTML file is correct.
+        javascriptMode: JavascriptMode.unrestricted, // Allow JavaScript execution.
         onWebViewCreated: (WebViewController webViewController) {
           _webViewController = webViewController;
         },
@@ -32,5 +32,3 @@ class _WebViewPageState extends State<WebViewPage> {
     );
   }
 }
-
-*/
