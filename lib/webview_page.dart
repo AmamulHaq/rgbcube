@@ -1,5 +1,6 @@
+import 'dart:html' as html;
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:ui' as ui;
 
 class WebViewPage extends StatefulWidget {
   @override
@@ -7,28 +8,52 @@ class WebViewPage extends StatefulWidget {
 }
 
 class _WebViewPageState extends State<WebViewPage> {
-  late WebViewController _webViewController;
+  late String _iframeElementId;
 
   @override
   void initState() {
     super.initState();
-    // Initialize the WebView platform
-    WebViewPlatform.instance?.clearCache();  // Remove this if it causes issues.
+
+    // Generate a unique ID for the iframe element
+    _iframeElementId = 'webview-${DateTime.now().millisecondsSinceEpoch}';
+
+    // Dynamically resolve the platformViewRegistry
+    final dynamic platformViewRegistry = _getPlatformViewRegistry();
+
+    if (platformViewRegistry != null) {
+      platformViewRegistry.registerViewFactory(
+        _iframeElementId,
+        (int viewId) => html.IFrameElement()
+          ..src = 'assets/rgb_cube_3d.html' // Ensure this is the correct relative path.
+          ..style.border = 'none'
+          ..allowFullscreen = true
+          ..allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture'
+          ..setAttribute('sandbox', 'allow-scripts allow-same-origin'),
+      );
+    } else {
+      throw Exception("Platform view registry not found. Ensure this is running on Flutter Web.");
+    }
+  }
+
+  dynamic _getPlatformViewRegistry() {
+    // Dynamically resolve `ui.platformViewRegistry` for flexibility.
+    try {
+      var platformViewRegistry2 = ui.platformViewRegistry;
+      var platformViewRegistry = platformViewRegistry2;
+      return platformViewRegistry;
+    } catch (e) {
+      print("PlatformViewRegistry not available: $e");
+      return null;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Web Content Viewer'),
+        title: Text('Dynamic Web Content Viewer'),
       ),
-      body: WebView(
-        initialUrl: 'assets/rgb_cube_3d.html', // Ensure the path to the HTML file is correct.
-        javascriptMode: JavascriptMode.unrestricted, // Allow JavaScript execution.
-        onWebViewCreated: (WebViewController webViewController) {
-          _webViewController = webViewController;
-        },
-      ),
+      body: HtmlElementView(viewType: _iframeElementId),
     );
   }
 }
