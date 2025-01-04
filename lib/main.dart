@@ -60,7 +60,8 @@ class _WebViewPageState extends State<WebViewPage> {
   }
 
   Future<void> _sendRGBToServer(String rgb, String type) async {
-    final url = Uri.parse('http://192.168.31.8:5002/log_color'); // Flask server URL
+    final url =
+        Uri.parse('http://192.168.31.8:5002/log_color'); // Flask server URL
     final body = json.encode({"value": rgb, "type": type});
 
     try {
@@ -160,9 +161,9 @@ class _WebViewPageState extends State<WebViewPage> {
               width: double.infinity,
               child: HtmlElementView(viewType: _iframeElementId),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 3), // Reduced vertical space
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(8.0), // Reduced padding
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -170,7 +171,8 @@ class _WebViewPageState extends State<WebViewPage> {
                     width: 50,
                     height: 50,
                     color: _selectedColor,
-                    margin: const EdgeInsets.only(bottom: 16),
+                    margin: const EdgeInsets.only(
+                        bottom: 3), // Reduced bottom margin
                   ),
                   TextField(
                     controller: _hexController,
@@ -181,7 +183,7 @@ class _WebViewPageState extends State<WebViewPage> {
                     ),
                     onSubmitted: (_) => _updateColorFromHex(),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 3), // Reduced vertical space
                   TextField(
                     controller: _rgbController,
                     decoration: const InputDecoration(
@@ -191,7 +193,7 @@ class _WebViewPageState extends State<WebViewPage> {
                     ),
                     onSubmitted: (_) => _updateColorFromRGB(),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 3), // Reduced vertical space
                   ElevatedButton(
                     onPressed: _navigateToNewPage,
                     child: const Text('Go to New Page'),
