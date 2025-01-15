@@ -39,8 +39,6 @@ class _NewPageState extends State<NewPage> {
   String? _iframeId;
   String? _iframeUrl;
   bool _showIframe = false;
-
-  // For Image URL Input
   String? _imagePath;
   Color _color = Colors.red;
 
@@ -59,7 +57,6 @@ class _NewPageState extends State<NewPage> {
           ..allow =
               'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture'
           ..setAttribute('sandbox', 'allow-scripts allow-same-origin');
-
         if (_iframeUrl != null) {
           iframe.src = _iframeUrl!;
         }
@@ -68,14 +65,12 @@ class _NewPageState extends State<NewPage> {
     );
   }
 
-  // Update the image path for the input
   void _updateImagePath() {
     setState(() {
       _imagePath = _imageUrlController.text;
     });
   }
 
-  // Load the image for color picker and generate 3D cube
   Future<void> _loadImageAndGenerateCube() async {
     setState(() {
       _loading = true;
@@ -84,14 +79,12 @@ class _NewPageState extends State<NewPage> {
     });
 
     try {
-      // Send request to generate_rgb_color.py (port 5001)
       final rgbResponse = await http.post(
         Uri.parse('http://127.0.0.1:5001/load_image'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'url': _imageUrlController.text.trim()}),
       );
 
-      // Handle RGB color picker image loading response
       if (rgbResponse.statusCode == 200) {
         setState(() {
           _imageLoaded = true;
@@ -104,23 +97,19 @@ class _NewPageState extends State<NewPage> {
         });
       }
 
-      // Send request to generate_3d_cube.py (port 5000)
       final cubeResponse = await http.post(
         Uri.parse('http://127.0.0.1:5000/generate_cube'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({'imageUrl': _imageUrlController.text.trim()}),
       );
 
-      // Handle 3D cube generation response
       if (cubeResponse.statusCode == 200) {
         final responseBody = json.decode(cubeResponse.body);
         final htmlBase64 = responseBody['cubeHtml'];
-
         if (htmlBase64 != null && htmlBase64 is String) {
           final decodedHtml = utf8.decode(base64Decode(htmlBase64));
           final blob = html.Blob([decodedHtml], 'text/html');
           final url = html.Url.createObjectUrlFromBlob(blob);
-
           setState(() {
             _iframeUrl = url;
             _showIframe = true;
@@ -151,13 +140,12 @@ class _NewPageState extends State<NewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(0), // Remove outer padding
+        padding: const EdgeInsets.all(0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image URL Input and button in a row
             Padding(
-              padding: const EdgeInsets.only(bottom: 3), // Reduce padding
+              padding: const EdgeInsets.only(bottom: 3),
               child: Row(
                 children: [
                   Expanded(
@@ -169,7 +157,7 @@ class _NewPageState extends State<NewPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 3), // Reduce space between
+                  const SizedBox(width: 3),
                   ElevatedButton(
                     onPressed: _loadImageAndGenerateCube,
                     child: _loading
@@ -181,21 +169,18 @@ class _NewPageState extends State<NewPage> {
             ),
             if (_errorMessage != null)
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 3.0), // Reduce padding
+                padding: const EdgeInsets.symmetric(vertical: 3.0),
                 child: Text(_errorMessage!,
                     style: const TextStyle(color: Colors.red)),
               ),
-
-            // Image Color Picker Container
             if (_imageLoaded)
               Container(
-                padding: const EdgeInsets.all(4.0), // Add padding
+                padding: const EdgeInsets.all(4.0),
                 child: Column(
                   children: [
                     MouseRegion(
                       onEnter: (_) {
-                        _handleHover(128, 128); // Example hover at (128, 128)
+                        _handleHover(128, 128);
                       },
                       child: GestureDetector(
                         onPanUpdate: (details) {
@@ -218,10 +203,9 @@ class _NewPageState extends State<NewPage> {
                     ),
                     if (_colorSample != null)
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 3.0), // Reduce padding
+                        padding: const EdgeInsets.symmetric(vertical: 3.0),
                         child: Container(
-                          padding: const EdgeInsets.all(4.0), // Add padding
+                          padding: const EdgeInsets.all(4.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(color: Colors.black),
@@ -266,17 +250,15 @@ class _NewPageState extends State<NewPage> {
                   ],
                 ),
               ),
-
-            // 3D Cube Generator Container at the bottom center
             if (_showIframe)
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  padding: EdgeInsets.zero, // Remove padding
-                  margin: EdgeInsets.zero, // Remove margin
+                  padding: EdgeInsets.zero,
+                  margin: EdgeInsets.zero,
                   child: SizedBox(
-                    width: 256, // Keep width as is (or adjust as necessary)
-                    height: 256, // Keep height as is (or adjust as necessary)
+                    width: 256,
+                    height: 256,
                     child: HtmlElementView(viewType: _iframeId!),
                   ),
                 ),
@@ -287,7 +269,6 @@ class _NewPageState extends State<NewPage> {
     );
   }
 
-  // Function to handle hover for RGB and Hex details
   void _handleHover(int x, int y) async {
     final response = await http.post(
       Uri.parse('http://127.0.0.1:5001/get_pixel_info'),
@@ -298,7 +279,7 @@ class _NewPageState extends State<NewPage> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       setState(() {
-        _colorSample = data['hex']; // colorSample for color display box
+        _colorSample = data['hex'];
         _rgbDetails = 'RGB(${data['r']}, ${data['g']}, ${data['b']})';
         _hexDetails = 'Hex: ${data['hex']}';
         _positionDetails = 'Position: ($x, $y)';

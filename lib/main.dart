@@ -39,8 +39,6 @@ class _WebViewPageState extends State<WebViewPage> {
   void initState() {
     super.initState();
     _iframeElementId = 'webview-${DateTime.now().millisecondsSinceEpoch}';
-
-    // Register the iframe with Flutter platform view
     ui.platformViewRegistry.registerViewFactory(
       _iframeElementId,
       (int viewId) {
@@ -54,14 +52,11 @@ class _WebViewPageState extends State<WebViewPage> {
         return _iframeElement!;
       },
     );
-
-    // Set initial RGB value to (0,0,0)
     _updateColorFromRGB('(0,0,0)');
   }
 
   Future<void> _sendRGBToServer(String rgb, String type) async {
-    final url =
-        Uri.parse('http://192.168.31.8:5002/log_color'); // Flask server URL
+    final url = Uri.parse('http://192.168.31.8:5002/log_color');
     final body = json.encode({"value": rgb, "type": type});
 
     try {
@@ -72,8 +67,7 @@ class _WebViewPageState extends State<WebViewPage> {
       );
 
       if (response.statusCode == 200) {
-        print('$rgb is sent to generate_rgb_cube.py');
-        _reloadWebView(); // Reload WebView after successful server update
+        _reloadWebView();
       } else {
         print('Error: ${response.body}');
       }
@@ -161,9 +155,9 @@ class _WebViewPageState extends State<WebViewPage> {
               width: double.infinity,
               child: HtmlElementView(viewType: _iframeElementId),
             ),
-            const SizedBox(height: 3), // Reduced vertical space
+            const SizedBox(height: 3),
             Padding(
-              padding: const EdgeInsets.all(8.0), // Reduced padding
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -171,8 +165,7 @@ class _WebViewPageState extends State<WebViewPage> {
                     width: 50,
                     height: 50,
                     color: _selectedColor,
-                    margin: const EdgeInsets.only(
-                        bottom: 3), // Reduced bottom margin
+                    margin: const EdgeInsets.only(bottom: 3),
                   ),
                   TextField(
                     controller: _hexController,
@@ -183,7 +176,7 @@ class _WebViewPageState extends State<WebViewPage> {
                     ),
                     onSubmitted: (_) => _updateColorFromHex(),
                   ),
-                  const SizedBox(height: 3), // Reduced vertical space
+                  const SizedBox(height: 3),
                   TextField(
                     controller: _rgbController,
                     decoration: const InputDecoration(
@@ -193,7 +186,7 @@ class _WebViewPageState extends State<WebViewPage> {
                     ),
                     onSubmitted: (_) => _updateColorFromRGB(),
                   ),
-                  const SizedBox(height: 3), // Reduced vertical space
+                  const SizedBox(height: 3),
                   ElevatedButton(
                     onPressed: _navigateToNewPage,
                     child: const Text('Go to New Page'),

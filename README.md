@@ -1,16 +1,20 @@
-# rgbcube
+RGB cube
 
-A new Flutter project.
+RGB cube is a tool available in web/app..
+It is similar as COLOR picker..
+With some extra features..
 
-## Getting Started
+First Page
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+1>One can enter HEX code e.g:#EFAD34 or RGB co ordinates e.g:(67,83,123) and those will synchronizes with respective color and Black Dot will be highlighted for that co ordinates in dynamic view of 3D RGB cube..
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+2>Sample color wil be displayed for that HEX code or Co ordinates.. ALL FEATURES ARE SYNCRONIZED with each other...go to 1>re enter
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Second Page
+
+1>One can enter Image URL for getting HEX code of respective color and out tool will analyze every pixels in the image to extract HEX code..
+
+2>RGB cube will be generated based on color distribution of individual pixels of that image..3D visualization of Image Color Density
+
+
